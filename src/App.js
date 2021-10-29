@@ -6,7 +6,7 @@ import { useFormik } from 'formik';
 function App() {
   const formik = useFormik({
     initialValues: {
-      email: "",
+      email: "123",
     },
     validationSchema: Yup.object({
       firstName: Yup.string()
