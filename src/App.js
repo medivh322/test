@@ -1,47 +1,69 @@
 import React, { useEffect, useState } from 'react';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
+
 
 function App() {
-  const [password, setPassword] = useState("");
-  const [repPassword, setRepPassword] = useState("");
-  const [error, setError] = useState(true);
-
-  const submitForm = (e) => {
-    e.preventDefault();
-    if(password === repPassword){
-        alert("Success");
-    }else{
-        setError(true);
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string()
+        .max(15, 'Must be 15 characters or less')
+        .required('Required'),
+      lastName: Yup.string()
+        .max(20, 'Must be 20 characters or less')
+        .required('Required'),
+      email: Yup.string().email('Invalid email address').required('Required'),
+    }),
+    onSubmit: values => {
+      alert(JSON.stringify(values, null, 2));
+    },
+    onSubmit: values => {
+      alert(JSON.stringify(values, null, 2));
     }
-  }
-
-  useEffect(() => {
-      if(password !== repPassword || password === "" || repPassword === ""){
-          setError(true);
-      }else{
-          setError(false)
-      }
-  }, [password, repPassword]);
-
-  return (
-    <div className="form_main">
-      <h1 className="title">Смена пароля</h1>
-      <p className="sml_title">Пароль должен содержать не менее 8 символов и одну заглавную букву.</p>
-      <form className="form" onSubmit={submitForm}>
-        <div className="form_block">
-          <label htmlFor="formpass">Пароль</label>
-          <input id="formpass" type="password" onChange={(e) => setPassword(e.target.value)}/>
-        </div>
-        <div className="form_block">
-          <label htmlFor="formpassagain">Повторите пароль</label>
-          <input id="formpassagain" className={error ? "error" : "success"} type="password" onChange={(e) =>setRepPassword(e.target.value)}/>
-          {error ? 
-            <span className="error_text">Error</span> : ""
-          }    
-        </div>
-        <input type="submit" value="Сменить пароль"/>
-      </form>
-    </div>
-  );
+  })
+  return(
+    <form onSubmit={formik.handleSubmit}>
+       <label htmlFor="firstName">First Name</label>
+       <input
+         id="firstName"
+         name="firstName"
+         type="text"
+         onChange={formik.handleChange}
+         onBlur={formik.handleBlur}
+         value={formik.values.firstName}
+       />
+       {formik.errors.firstName ? (
+         <div>{formik.errors.firstName}</div>
+       ) : null}
+       <label htmlFor="lastName">Last Name</label>
+       <input
+         id="lastName"
+         name="lastName"
+         type="text"
+         onChange={formik.handleChange}
+         onBlur={formik.handleBlur}
+         value={formik.values.lastName}
+       />
+       {formik.errors.lastName ? (
+         <div>{formik.errors.lastName}</div>
+       ) : null}
+ 
+       <label htmlFor="email">Email Address</label>
+       <input
+         id="email"
+         name="email"
+         type="email"
+         onChange={formik.handleChange}
+         onBlur={formik.handleBlur}
+         value={formik.values.email}
+       />
+ 
+       <button type="submit">Submit</button>
+     </form>
+  )
 }
 
 export default App;
